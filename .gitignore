@@ -1,0 +1,22 @@
+# Ignore local-scripts
+/local_scripts
+
+# Ignore release file
+/release
+
+# I have no idea
+.idea
+
+# build and editor file
+/target
+*/target
+**/*.rs.bk
+*~
+#*
+.#*
+#*#
+**/*.rs.swp
+/sqlfile
+.env
+
+.DS_Store
