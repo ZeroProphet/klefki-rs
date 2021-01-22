@@ -1,11 +1,7 @@
-use num_bigint::BigUint;
-use std::ops::Add;
-use std::ops::Sub;
-use std::ops::Mul;
-use std::ops::Div;
-use std::cmp::Eq;
+use std::ops::{Add, Sub, Mul, Div};
+use std::cmp::{Eq, PartialEq};
 use std::ops::Neg;
-use std::cmp::PartialEq;
+use num_bigint::BigUint;
 use crate::traits::{Group, Ring, Field, MulInv};
 use crate::fields::arithmetic::extended_euclidean_algorithm;
 
