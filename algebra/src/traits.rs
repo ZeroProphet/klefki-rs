@@ -28,14 +28,13 @@ pub trait Semigroup = Groupoid + Add;
 /// If (G, o) is a groupoid and if the associative rule (aob)oc = ao(boc) holds for all a, b, c ∈ G, then (G, o) is called a semigroup.
 /// An element e of a groupoid (G, o) is called an identity element if eoa = aoe = a for all a ∈ G. If there is an identity element in a groupoid then it is unique.
 // A semigroup with identity element is called a monoid.
-
 pub trait Monoid = Semigroup + Zero;
 
 
 /// Group
 /// Let (G, o) be a monoid. An element a’ ∈ G is called an inverse of the element a ∈ G if aoa’ = a’oa = e (the identity element of G). The inverse of the element a ∈ G is denoted by a^{-1}.
 /// A monoid in which every element has an inverse is called group.
-pub trait Group = Monoid + Neg + Sub;
+pub trait Group: Monoid + Neg + Sub {}
 
 /// RING is a setRwhich is CLOSED under two operations+and×andsatisfying the following properties:
 /// (1) R is an abelian group under+.
@@ -48,5 +47,8 @@ pub trait Ring = Group + Mul;
 /// which is closed under two operations + and × s.t.
 /// (1) Fis an abelian group under + and
 /// (2) F-{0} (the set F without the additive identity 0) is an abelian group under ×.
+pub trait MulInv {
+    fn mul_inv(self, rhs: Self) -> Self;
+}
 
-pub trait Field = Ring + Div + One;
+pub trait Field: Ring + Div + MulInv + One {}
