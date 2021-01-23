@@ -2,8 +2,8 @@ use std::ops::{Add, Sub, Mul, Div};
 use std::cmp::{Eq, PartialEq};
 use std::ops::Neg;
 use num_bigint::BigUint;
-use crate::traits::{Group, Ring, Field, MulInv};
-use crate::fields::arithmetic::extended_euclidean_algorithm;
+use crate::algebra::traits::{Group, Ring, Field, MulInv};
+use crate::algebra::fields::arithmetic::extended_euclidean_algorithm;
 
 #[derive(Debug, Eq, PartialEq, Clone)]
 pub struct PrimeFieldIns {

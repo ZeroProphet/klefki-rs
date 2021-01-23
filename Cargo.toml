@@ -2,8 +2,7 @@
 name = "klefki"
 version = "0.1.0"
 authors = ["Ryan.K <ryankung@ieee.org>"]
+edition = "2018"
 
 [dependencies]
-ark-ff = { git = "https://github.com/arkworks-rs/algebra" }
-libsecp256k1 = "0.3.5"
-evcxr="0.3.2"
+num-bigint = "0.3.1"
