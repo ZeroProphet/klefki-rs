@@ -17,18 +17,6 @@ pub trait PrimeFieldProperty<T>: Debug {
 
 pub type PrimeField<T> = Box<dyn PrimeFieldProperty<T>>;
 
-impl <T> PartialEq for PrimeField<T> {
-    fn eq(&self, rhs: &Self) -> bool {
-        return self.value() == rhs.value();
-    }
-
-    fn ne(&self, rhs: &Self) -> bool {
-        return self.value() != rhs.value();
-    }
-}
-
-impl <T> Eq for PrimeField<T> {}
-
 impl <T> Add for PrimeField<T>
     where T: New
 {
@@ -46,7 +34,7 @@ impl <T> Mul for PrimeField<T>
     type Output = Self;
     fn mul(self, rhs: Self) -> Self {
         return T::new(
-            (self.value() * rhs.value()) % rhs.prime()
+            (self.value() * rhs.value()) % self.prime()
         )
     }
 }
@@ -93,6 +81,18 @@ impl <T> MulInv for PrimeField<T>
         )
     }
 }
+
+impl <T> PartialEq for PrimeField<T> {
+    fn eq(&self, rhs: &Self) -> bool {
+        return self.value() == rhs.value();
+    }
+
+    fn ne(&self, rhs: &Self) -> bool {
+        return self.value() != rhs.value();
+    }
+}
+
+impl <T> Eq for PrimeField<T> {}
 
 impl <T> Group for PrimeField<T> where T: New{}
 impl <T> Ring for PrimeField<T> where T: New {}
