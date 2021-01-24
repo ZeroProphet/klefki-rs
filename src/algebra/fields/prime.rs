@@ -1,4 +1,5 @@
 use std::ops::{Add, Sub, Mul, Div};
+use std::fmt::Debug;
 use std::cmp::{Eq, PartialEq};
 use std::ops::Neg;
 use num_bigint::BigUint;
@@ -11,25 +12,23 @@ pub struct PrimeFieldIns {
     pub value: BigUint
 }
 
-trait PrimeField {
-    fn prime(&self) -> &BigUint;
-    fn value(&self) -> &BigUint;
-    fn set_value(&mut self, value: BigUint);
+pub trait PrimeFieldProperty: Debug {
+    fn prime(&self) -> BigUint;
+    fn value(&self) -> BigUint;
 }
 
-impl PrimeField for PrimeFieldIns {
-    fn prime(&self) -> &BigUint {
-        return &self.prime;
+pub type PrimeField = Box<dyn PrimeFieldProperty>;
+
+impl PrimeFieldProperty for PrimeFieldIns {
+    fn prime(&self) -> BigUint {
+        return self.prime.clone();
     }
-    fn value(&self) -> &BigUint {
-        return &self.value;
-    }
-    fn set_value(&mut self, value: BigUint) {
-        self.value = value;
+    fn value(&self) -> BigUint {
+        return self.value.clone();
     }
 }
 
-impl PartialEq for Box<dyn PrimeField> {
+impl PartialEq for PrimeField {
     fn eq(&self, rhs: &Self) -> bool {
         return self.value() == rhs.value();
     }
@@ -39,10 +38,10 @@ impl PartialEq for Box<dyn PrimeField> {
     }
 }
 
-impl Eq for Box<dyn PrimeField> {}
+impl Eq for PrimeField {}
 
 
-impl Add for Box<dyn PrimeField> {
+impl Add for PrimeField {
     type Output = Self;
     fn add(self, rhs: Self) -> Self {
         return Box::new(PrimeFieldIns {
@@ -52,7 +51,7 @@ impl Add for Box<dyn PrimeField> {
     }
 }
 
-impl Mul for Box<dyn PrimeField> {
+impl Mul for PrimeField {
     type Output = Self;
     fn mul(self, rhs: Self) -> Self {
         return box PrimeFieldIns {
@@ -62,7 +61,7 @@ impl Mul for Box<dyn PrimeField> {
     }
 }
 
-impl Neg for Box<dyn PrimeField> {
+impl Neg for PrimeField {
     type Output = Self;
     fn neg(self) -> Self {
         return box PrimeFieldIns {
@@ -73,7 +72,7 @@ impl Neg for Box<dyn PrimeField> {
 }
 
 
-impl Sub for Box<dyn PrimeField> {
+impl Sub for PrimeField {
     type Output = Self;
     fn sub(self, rhs: Self) -> Self {
         return self + (-rhs)
@@ -81,14 +80,14 @@ impl Sub for Box<dyn PrimeField> {
 }
 
 
-impl Div for Box<dyn PrimeField> {
+impl Div for PrimeField {
     type Output = Self;
     fn div(self, rhs: Self) -> Self {
         return self * rhs.mul_inv();
     }
 }
 
-impl MulInv for Box<dyn PrimeField> {
+impl MulInv for PrimeField {
     type Output = Self;
     fn mul_inv(self) -> Self {
         let (_gcd, x, _y) = extended_euclidean_algorithm(self.value().clone(), self.prime().clone());
@@ -99,6 +98,62 @@ impl MulInv for Box<dyn PrimeField> {
     }
 }
 
-impl Group for Box<dyn PrimeField> {}
-impl Ring for Box<dyn PrimeField> {}
-impl Field  for Box<dyn PrimeField> {}
+impl Group for PrimeField {}
+impl Ring for PrimeField {}
+impl Field  for PrimeField {}
+
+
+#[cfg(test)]
+mod tests {
+    use num_bigint::BigUint;
+    use crate::algebra::fields::prime::PrimeField;
+    use crate::algebra::fields::prime::PrimeFieldProperty;
+
+
+    #[derive(Debug, Eq, PartialEq, Clone)]
+    struct Secp256k1Field {
+        pub value: BigUint
+    }
+
+    impl PrimeFieldProperty for Secp256k1Field {
+        fn prime(&self) -> BigUint {
+            return BigUint::from_slice(&[
+                0xfffffc2fu32,
+                0xfffffffeu32,
+                0xffffffffu32,
+                0xffffffffu32,
+                0xffffffffu32,
+                0xffffffffu32,
+                0xffffffffu32,
+                0xffffffffu32
+            ]);
+        }
+        fn value(&self) -> BigUint {
+            return self.value.clone();
+        }
+    }
+
+    impl Secp256k1Field {
+        fn new(v: BigUint) -> PrimeField {
+            return (box Self {
+                value: v
+            }) as Box<dyn PrimeFieldProperty>
+        }
+    }
+
+    impl From<u16> for PrimeField {
+        fn from(v: u16) -> Self {
+            return (box Secp256k1Field {
+                value: BigUint::from(v)
+            }) as Box<dyn PrimeFieldProperty>
+        }
+    }
+
+    #[test]
+    fn ff_add() {
+        let a = Secp256k1Field::new(BigUint::from(1u16));
+        let b = Secp256k1Field::new(BigUint::from(2u16));
+        let c = Secp256k1Field::new(BigUint::from(3u16));
+        assert_eq!(a + b == c, true);
+    }
+}
