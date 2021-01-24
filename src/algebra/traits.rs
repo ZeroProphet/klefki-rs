@@ -9,7 +9,7 @@ use std::ops::Mul;
 use std::ops::Div;
 use std::cmp::Eq;
 use std::ops::Neg;
-
+use num::traits::{Zero, One};
 
 
 /// Groupoid
@@ -22,7 +22,7 @@ pub trait Groupoid = Eq + Sized;
 /// If (G, o) is a groupoid and if the associative rule (aob)oc = ao(boc) holds for all a, b, c ∈ G, then (G, o) is called a semigroup.
 /// An element e of a groupoid (G, o) is called an identity element if eoa = aoe = a for all a ∈ G. If there is an identity element in a groupoid then it is unique.
 
-pub trait Semigroup = Groupoid + Add;
+pub trait Semigroup = Groupoid + Add + Zero;
 
 /// Semigroup
 /// If (G, o) is a groupoid and if the associative rule (aob)oc = ao(boc) holds for all a, b, c ∈ G, then (G, o) is called a semigroup.
@@ -52,4 +52,4 @@ pub trait MulInv {
     fn mul_inv(self) -> Self;
 }
 
-pub trait Field: Ring + Div + MulInv {}
+pub trait Field: Ring + Div + MulInv + One {}

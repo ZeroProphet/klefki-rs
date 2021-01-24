@@ -3,6 +3,7 @@ use std::fmt::Debug;
 use std::cmp::{Eq, PartialEq};
 use std::ops::Neg;
 use num_bigint::BigUint;
+use num::traits::{Zero, One};
 use crate::algebra::traits::{Group, Ring, Field, MulInv};
 use crate::algebra::fields::arithmetic::extended_euclidean_algorithm;
 
@@ -27,6 +28,30 @@ impl <T> Add for PrimeField<T>
         )
     }
 }
+
+impl <T> Zero for PrimeField<T>
+where T: New
+{
+    fn zero() -> Self {
+        return T::new(BigUint::from(0u32));
+    }
+    fn is_zero(&self) -> bool {
+        return self.value() == BigUint::from(0u32);
+    }
+}
+
+
+impl <T> One for PrimeField<T>
+where T: New
+{
+    fn one() -> Self {
+        return T::new(BigUint::from(1u32));
+    }
+    fn is_one(&self) -> bool {
+        return self.value() == BigUint::from(1u32);
+    }
+}
+
 
 impl <T> Mul for PrimeField<T>
     where T: New
@@ -109,20 +134,20 @@ mod tests {
 
 
     #[derive(Debug, Eq, PartialEq, Clone)]
-    struct Secp256k1FieldIns {
+    struct Secp256k1FieldEle {
         pub value: BigUint
     }
 
-    impl New for Secp256k1FieldIns {
-        fn new(value: BigUint) -> PrimeField<Secp256k1FieldIns> {
+    impl New for Secp256k1FieldEle {
+        fn new(value: BigUint) -> PrimeField<Secp256k1FieldEle> {
             return (box Self {
                 value: value
-            }) as PrimeField<Secp256k1FieldIns>
+            }) as PrimeField<Secp256k1FieldEle>
         }
     }
 
 
-    impl PrimeFieldProperty<Secp256k1FieldIns> for Secp256k1FieldIns {
+    impl PrimeFieldProperty<Secp256k1FieldEle> for Secp256k1FieldEle {
         fn prime(&self) -> BigUint {
             return BigUint::from_slice(&[
                 0xfffffc2fu32,
@@ -139,11 +164,11 @@ mod tests {
             return self.value.clone();
         }
     }
-    type Secp256k1FinateField = Box<dyn PrimeFieldProperty<Secp256k1FieldIns>>;
+    type Secp256k1FinateField = Box<dyn PrimeFieldProperty<Secp256k1FieldEle>>;
 
     impl From<u16> for Secp256k1FinateField {
         fn from(v: u16) -> Self {
-            return Secp256k1FieldIns::new(
+            return Secp256k1FieldEle::new(
                 BigUint::from(v)
             )
         }
