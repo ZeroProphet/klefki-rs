@@ -137,15 +137,7 @@ mod tests {
         fn new(v: BigUint) -> PrimeField {
             return (box Self {
                 value: v
-            }) as Box<dyn PrimeFieldProperty>
-        }
-    }
-
-    impl From<u16> for PrimeField {
-        fn from(v: u16) -> Self {
-            return (box Secp256k1Field {
-                value: BigUint::from(v)
-            }) as Box<dyn PrimeFieldProperty>
+            }) as PrimeField
         }
     }
 
