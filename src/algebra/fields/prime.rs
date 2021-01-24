@@ -82,7 +82,9 @@ impl <T> MulInv for PrimeField<T>
     }
 }
 
-impl <T> PartialEq for PrimeField<T> {
+impl <T> PartialEq for PrimeField<T>
+    where T: New
+{
     fn eq(&self, rhs: &Self) -> bool {
         return self.value() == rhs.value();
     }
@@ -92,8 +94,7 @@ impl <T> PartialEq for PrimeField<T> {
     }
 }
 
-impl <T> Eq for PrimeField<T> {}
-
+impl <T> Eq for PrimeField<T> where T: New{}
 impl <T> Group for PrimeField<T> where T: New{}
 impl <T> Ring for PrimeField<T> where T: New {}
 impl <T> Field  for PrimeField<T> where T: New {}
