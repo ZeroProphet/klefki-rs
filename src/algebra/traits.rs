@@ -10,6 +10,8 @@ use std::ops::Div;
 use std::cmp::Eq;
 use std::ops::Neg;
 
+
+
 /// Groupoid
 /// A groupoid is an algebraic structure consisting of a non-empty set G and a binary operation o on G. The pair (G, o) is called groupoid.
 /// The set of real numbers with the binary operation of addition is a groupoid.
