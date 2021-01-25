@@ -12,10 +12,7 @@ pub struct CurveParams<F> {
 }
 
 pub trait Curve<F, G> {
-    fn new(
-        x: prime::PrimeField<F>,
-        y: prime::PrimeField<F>,
-    ) -> Box<dyn CurvePoint<F, G>>;
+    fn new(x: prime::PrimeField<F>, y: prime::PrimeField<F>) -> Box<dyn CurvePoint<F, G>>;
 
     fn op(a: Box<dyn CurvePoint<F, G>>, b: Box<dyn CurvePoint<F, G>>) -> Box<dyn CurvePoint<F, G>>;
 }
