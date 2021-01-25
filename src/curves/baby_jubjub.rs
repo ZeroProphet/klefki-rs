@@ -61,10 +61,10 @@ impl ecg::Curve<BabyJubJubFieldEle, BabyJubJubCurve> for BabyJubJubCurve {
             as Box<dyn ecg::CurvePoint<BabyJubJubFieldEle, BabyJubJubCurve>>;
     }
     fn op(a: Box<BabyJubJubCurveGroup>, b: Box<BabyJubJubCurveGroup>) -> Box<BabyJubJubCurveGroup> {
-        let par_a = BabyJubJubField::from(BABY_JUBJUB_A);
-        let m = par_a.clone() * a.x() * b.x() * a.y() * b.y();
+
+        let m = BabyJubJubField::from(BABY_JUBJUB_B) * a.x() * b.x() * a.y() * b.y();
         let x3 = (a.x() * b.y() + a.y() * b.x()) / (BabyJubJubField::one() + m.clone());
-        let y3 = (a.y() * b.y() - par_a * a.x() * b.x()) / (BabyJubJubField::one() - m);
+        let y3 = (a.y() * b.y() - BabyJubJubField::from(BABY_JUBJUB_A) * a.x() * b.x()) / (BabyJubJubField::one() - m);
         return box BabyJubJubCurve { x: x3, y: y3 };
     }
 }
