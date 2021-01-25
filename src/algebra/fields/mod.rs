@@ -1,2 +1,2 @@
-pub mod prime;
 pub mod arithmetic;
+pub mod prime;

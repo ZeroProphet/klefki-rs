@@ -1,16 +1,14 @@
+use num::traits::{One, Zero};
+use std::cmp::Eq;
 /// # ref:
 /// * http://www-users.math.umn.edu/~brubaker/docs/152/152groups.pdf
 /// * https://livedu.in/algebraic-structure/
 ///
-
 use std::ops::Add;
-use std::ops::Sub;
-use std::ops::Mul;
 use std::ops::Div;
-use std::cmp::Eq;
+use std::ops::Mul;
 use std::ops::Neg;
-use num::traits::{Zero, One};
-
+use std::ops::Sub;
 
 /// Groupoid
 /// A groupoid is an algebraic structure consisting of a non-empty set G and a binary operation o on G. The pair (G, o) is called groupoid.
@@ -29,7 +27,6 @@ pub trait Semigroup = Groupoid + Add + Zero;
 /// An element e of a groupoid (G, o) is called an identity element if eoa = aoe = a for all a ∈ G. If there is an identity element in a groupoid then it is unique.
 // A semigroup with identity element is called a monoid.
 pub trait Monoid = Semigroup;
-
 
 /// Group
 /// Let (G, o) be a monoid. An element a’ ∈ G is called an inverse of the element a ∈ G if aoa’ = a’oa = e (the identity element of G). The inverse of the element a ∈ G is denoted by a^{-1}.
