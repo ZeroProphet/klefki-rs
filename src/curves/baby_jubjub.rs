@@ -1,6 +1,7 @@
 use crate::algebra::fields::prime;
 use crate::algebra::fields::prime::New;
-use crate::algebra::groups::ecg;
+use crate::algebra::groups::ecg::Curve;
+use crate::algebra::groups::ecg::CurvePoint;
 use num::One;
 use num_bigint::BigUint;
 use std::cmp::{Eq, PartialEq};
@@ -53,23 +54,23 @@ pub struct BabyJubJubCurve {
     y: BabyJubJubField,
 }
 
-pub type BabyJubJubCurveGroup = dyn ecg::CurvePoint<BabyJubJubFieldEle, BabyJubJubCurve>;
+pub type BabyJubJubCurveGroup = Box<dyn CurvePoint<BabyJubJubFieldEle, BabyJubJubCurve>>;
 
-impl ecg::Curve<BabyJubJubFieldEle, BabyJubJubCurve> for BabyJubJubCurve {
-    fn new(x: BabyJubJubField, y: BabyJubJubField) -> Box<BabyJubJubCurveGroup> {
+impl Curve<BabyJubJubFieldEle, BabyJubJubCurve> for BabyJubJubCurve {
+    fn new(x: BabyJubJubField, y: BabyJubJubField) -> BabyJubJubCurveGroup {
         return box BabyJubJubCurve { x: x, y: y }
-            as Box<dyn ecg::CurvePoint<BabyJubJubFieldEle, BabyJubJubCurve>>;
+            as Box<dyn CurvePoint<BabyJubJubFieldEle, BabyJubJubCurve>>;
     }
-    fn op(a: Box<BabyJubJubCurveGroup>, b: Box<BabyJubJubCurveGroup>) -> Box<BabyJubJubCurveGroup> {
-
+    fn op(a: BabyJubJubCurveGroup, b: BabyJubJubCurveGroup) -> BabyJubJubCurveGroup {
         let m = BabyJubJubField::from(BABY_JUBJUB_B) * a.x() * b.x() * a.y() * b.y();
         let x3 = (a.x() * b.y() + a.y() * b.x()) / (BabyJubJubField::one() + m.clone());
-        let y3 = (a.y() * b.y() - BabyJubJubField::from(BABY_JUBJUB_A) * a.x() * b.x()) / (BabyJubJubField::one() - m);
+        let y3 = (a.y() * b.y() - BabyJubJubField::from(BABY_JUBJUB_A) * a.x() * b.x())
+            / (BabyJubJubField::one() - m);
         return box BabyJubJubCurve { x: x3, y: y3 };
     }
 }
 
-impl ecg::CurvePoint<BabyJubJubFieldEle, BabyJubJubCurve> for BabyJubJubCurve {
+impl CurvePoint<BabyJubJubFieldEle, BabyJubJubCurve> for BabyJubJubCurve {
     fn x(&self) -> BabyJubJubField {
         return self.x.clone();
     }
@@ -78,11 +79,11 @@ impl ecg::CurvePoint<BabyJubJubFieldEle, BabyJubJubCurve> for BabyJubJubCurve {
     }
 }
 
-impl From((u32, u32)) for BabyJubJubCurve {
+impl From<(u32, u32)> for BabyJubJubCurve {
     fn from(v: (u32, u32)) -> Self {
-        return BabyJubJubCurve::new(
-            BabyJubJubField::from(v[0]),
-            BabyJubJubField::from(v[1])
-        )
+        return BabyJubJubCurve {
+            x: BabyJubJubField::from(v.0),
+            y: BabyJubJubField::from(v.1),
+        };
     }
 }
