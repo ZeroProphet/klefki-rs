@@ -77,3 +77,12 @@ impl ecg::CurvePoint<BabyJubJubFieldEle, BabyJubJubCurve> for BabyJubJubCurve {
         return self.y.clone();
     }
 }
+
+impl From((u32, u32)) for BabyJubJubCurve {
+    fn from(v: (u32, u32)) -> Self {
+        return BabyJubJubCurve::new(
+            BabyJubJubField::from(v[0]),
+            BabyJubJubField::from(v[1])
+        )
+    }
+}
