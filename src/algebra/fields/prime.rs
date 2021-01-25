@@ -122,6 +122,12 @@ impl<T> Group for PrimeField<T> where T: New {}
 impl<T> Ring for PrimeField<T> where T: New {}
 impl<T> Field for PrimeField<T> where T: New {}
 
+impl <T> Clone for PrimeField<T> where T: New {
+    fn clone(&self) -> Self {
+        return T::new(self.value().clone());
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use crate::algebra::fields::prime::New;

@@ -11,28 +11,25 @@ pub struct CurveParams<F> {
     pub B: prime::PrimeField<F>,
 }
 
-pub struct CurvePoint<F> {
-    pub x: prime::PrimeField<F>,
-    pub y: prime::PrimeField<F>,
-}
-
 pub trait Curve<F, G> {
     fn new(
         x: prime::PrimeField<F>,
         y: prime::PrimeField<F>,
-    ) -> Box<dyn EllipticCurveGroupProperty<F, G>>;
-    fn add(a: CurvePoint<F>, b: CurvePoint<F>) -> Box<dyn EllipticCurveGroupProperty<F, G>>;
+    ) -> Box<dyn CurvePoint<F, G>>;
+
+    fn op(a: Box<dyn CurvePoint<F, G>>, b: Box<dyn CurvePoint<F, G>>) -> Box<dyn CurvePoint<F, G>>;
 }
 
-pub trait EllipticCurveGroupProperty<F, G>
+pub trait CurvePoint<F, G>
 where
     G: Curve<F, G>,
     F: prime::New,
 {
-    fn point(&self) -> CurvePoint<F>;
+    fn x(&self) -> prime::PrimeField<F>;
+    fn y(&self) -> prime::PrimeField<F>;
 }
 
-pub type EllipticCurveGroup<F, G> = Box<dyn EllipticCurveGroupProperty<F, G>>;
+pub type EllipticCurveGroup<F, G> = Box<dyn CurvePoint<F, G>>;
 
 impl<F, G> Add for EllipticCurveGroup<F, G>
 where
@@ -41,7 +38,7 @@ where
 {
     type Output = Self;
     fn add(self, rhs: Self) -> Self {
-        return G::add(self.point(), rhs.point());
+        return G::op(self, rhs);
     }
 }
 
@@ -57,8 +54,8 @@ where
         );
     }
     fn is_zero(&self) -> bool {
-        return self.point().x == prime::PrimeField::<F>::zero()
-            && self.point().y == prime::PrimeField::<F>::zero();
+        return self.x() == prime::PrimeField::<F>::zero()
+            && self.y() == prime::PrimeField::<F>::zero();
     }
 }
 
@@ -69,7 +66,7 @@ where
 {
     type Output = Self;
     fn neg(self) -> Self {
-        return G::new(self.point().x, -self.point().y);
+        return G::new(self.x(), -self.y());
     }
 }
 
@@ -90,11 +87,11 @@ where
     F: prime::New,
 {
     fn eq(&self, rhs: &Self) -> bool {
-        return self.point().x == rhs.point().x && self.point().y == rhs.point().y;
+        return self.x() == rhs.x() && self.y() == rhs.y();
     }
 
     fn ne(&self, rhs: &Self) -> bool {
-        return self.point().x != rhs.point().x || self.point().y != rhs.point().y;
+        return self.x() != rhs.x() || self.y() != rhs.y();
     }
 }
 
