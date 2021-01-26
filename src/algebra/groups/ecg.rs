@@ -1,5 +1,7 @@
 use crate::algebra::fields::prime;
 use crate::algebra::traits::Group;
+use crate::algebra::traits::Scalar;
+use crate::algebra::groups::arithmetic::double_and_add_algorithm;
 use num::traits::Num;
 use num::traits::Zero;
 use num_bigint::BigUint;
@@ -169,5 +171,28 @@ where
 {
     fn clone(&self) -> Self {
         return G::from(self.x().clone(), self.y().clone());
+    }
+}
+
+impl <F, G> Scalar<BigUint> for EllipticCurveGroup<F, G>
+where
+    G: FromBigUint<F, G> + Op<F, G>,
+    F: prime::FromBigUint,
+{
+    type Output = Self;
+    fn scalar(self, u: BigUint) -> Self {
+        return double_and_add_algorithm(u, self.clone(), Self::zero());
+    }
+}
+
+
+impl <F, G> Scalar<usize> for EllipticCurveGroup<F, G>
+where
+    G: FromBigUint<F, G> + Op<F, G>,
+    F: prime::FromBigUint,
+{
+    type Output = Self;
+    fn scalar(self, u: usize) -> Self {
+        return double_and_add_algorithm(BigUint::from(u), self.clone(), Self::zero());
     }
 }

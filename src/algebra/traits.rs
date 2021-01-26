@@ -1,4 +1,5 @@
 use num::traits::{One, Zero};
+use num_bigint::BigUint;
 use std::cmp::Eq;
 /// # ref:
 /// * http://www-users.math.umn.edu/~brubaker/docs/152/152groups.pdf
@@ -47,6 +48,11 @@ pub trait Ring: Group + Mul {}
 pub trait MulInv {
     type Output;
     fn mul_inv(self) -> Self;
+}
+
+pub trait Scalar<T>: Semigroup {
+    type Output;
+    fn scalar(self, rhs: T) -> Self;
 }
 
 pub trait Field: Ring + Div + MulInv + One {}
