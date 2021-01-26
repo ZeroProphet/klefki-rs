@@ -25,7 +25,8 @@ impl ecg::Op<ff::BabyJubJubFieldEle, BabyJubJubCurve> for BabyJubJubCurve {
     fn op(a: BabyJubJubCurveGroup, b: BabyJubJubCurveGroup) -> BabyJubJubCurveGroup {
         let m = ff::BabyJubJubField::from(BABY_JUBJUB_B) * a.x() * b.x() * a.y() * b.y();
         let x3 = (a.x() * b.y() + a.y() * b.x()) / (ff::BabyJubJubField::one() + m.clone());
-        let y3 = (a.y() * b.y() - ff::BabyJubJubField::from(BABY_JUBJUB_A) * a.x() * b.x()) / (ff::BabyJubJubField::one() - m);
+        let y3 = (a.y() * b.y() - ff::BabyJubJubField::from(BABY_JUBJUB_A) * a.x() * b.x())
+            / (ff::BabyJubJubField::one() - m);
         return box BabyJubJubCurve { x: x3, y: y3 };
     }
 }
@@ -41,8 +42,8 @@ impl ecg::CurvePoint<ff::BabyJubJubFieldEle, BabyJubJubCurve> for BabyJubJubCurv
 
 #[cfg(test)]
 mod tests {
-    use std::convert::TryFrom;
     use crate::curves::baby_jubjub::curve;
+    use std::convert::TryFrom;
 
     #[test]
     fn test_addition() {

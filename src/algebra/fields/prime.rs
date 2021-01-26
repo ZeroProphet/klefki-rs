@@ -1,11 +1,11 @@
 use crate::algebra::fields::arithmetic::extended_euclidean_algorithm;
 use crate::algebra::traits::{Field, Group, MulInv, Ring};
-use num::traits::{One, Zero};
 use num::traits::Num;
-use num_bigint::BigUint;
+use num::traits::{One, Zero};
 use num_bigint::BigInt;
-use std::convert::TryFrom;
+use num_bigint::BigUint;
 use std::cmp::{Eq, PartialEq};
+use std::convert::TryFrom;
 use std::fmt::Debug;
 use std::ops::Neg;
 use std::ops::{Add, Div, Mul, Sub};
@@ -104,9 +104,7 @@ where
         let m = BigInt::from(self.prime());
         let (_gcd, x, _y) =
             extended_euclidean_algorithm(self.value().clone(), self.prime().clone());
-        return T::from(BigUint::try_from(
-            (x % m.clone() + m.clone()) % m.clone()
-        ).unwrap());
+        return T::from(BigUint::try_from((x % m.clone() + m.clone()) % m.clone()).unwrap());
     }
 }
 
@@ -188,8 +186,8 @@ mod tests {
     use crate::algebra::fields::prime::FromBigUint;
     use crate::algebra::fields::prime::PrimeField;
     use crate::algebra::fields::prime::PrimeFieldEle;
-    use std::convert::TryFrom;
     use num_bigint::BigUint;
+    use std::convert::TryFrom;
 
     #[derive(Debug, Eq, PartialEq, Clone)]
     struct Secp256k1FieldEle {
@@ -243,18 +241,12 @@ mod tests {
     #[test]
     fn ff_from() {
         let a = "2626589144620713026669568689430873010625803728049924121243784502389097019475";
-        let b: [u32; 8] = [3575560275,
-                            1167457983,
-                            588660917,
-                            3001516614,
-                            1119721974,
-                            3807046053,
-                            453375103,
-                            97425606
+        let b: [u32; 8] = [
+            3575560275, 1167457983, 588660917, 3001516614, 1119721974, 3807046053, 453375103,
+            97425606,
         ];
         let fa = Secp256k1FinateField::try_from(a).unwrap();
         let fb = Secp256k1FinateField::from(&b[..]);
         assert_eq!(fa == fb, true);
-
     }
 }

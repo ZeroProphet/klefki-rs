@@ -1,13 +1,13 @@
 use crate::algebra::fields::prime;
 use crate::algebra::traits::Group;
-use std::fmt;
 use num::traits::Num;
 use num::traits::Zero;
 use num_bigint::BigUint;
 use std::cmp::{Eq, PartialEq};
+use std::convert::TryFrom;
+use std::fmt;
 use std::ops::Neg;
 use std::ops::{Add, Sub};
-use std::convert::TryFrom;
 
 pub trait FromBigUint<F, G> {
     fn from(x: prime::PrimeField<F>, y: prime::PrimeField<F>) -> Box<dyn CurvePoint<F, G>>;
@@ -148,7 +148,6 @@ where
         return G::from(F::from(v.0), F::from(v.1));
     }
 }
-
 
 impl<F, G> TryFrom<(&str, &str)> for EllipticCurveGroup<F, G>
 where

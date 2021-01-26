@@ -1,6 +1,6 @@
-use num_bigint::BigUint;
-use num_bigint::BigInt;
 use num::traits::{One, Zero};
+use num_bigint::BigInt;
+use num_bigint::BigUint;
 
 pub fn extended_euclidean_algorithm(a: BigUint, b: BigUint) -> (BigInt, BigInt, BigInt) {
     let (mut s, mut t, mut r) = (BigInt::zero(), BigInt::one(), BigInt::from(b));
@@ -21,20 +21,15 @@ pub fn extended_euclidean_algorithm(a: BigUint, b: BigUint) -> (BigInt, BigInt, 
         old_t = t.clone();
         t = &m - quoient * t;
     }
-    return (
-        old_r,
-        old_s,
-        old_t,
-    );
+    return (old_r, old_s, old_t);
 }
-
 
 #[cfg(test)]
 mod test {
-    use num_bigint::BigUint;
-    use num_bigint::BigInt;
-    use num::traits::{One, Zero};
     use crate::algebra::fields::arithmetic::extended_euclidean_algorithm;
+    use num::traits::{One, Zero};
+    use num_bigint::BigInt;
+    use num_bigint::BigUint;
     #[test]
     fn test_modinv() {
         let a = BigUint::one();
