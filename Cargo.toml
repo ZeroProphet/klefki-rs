@@ -7,3 +7,4 @@ edition = "2018"
 [dependencies]
 num-bigint = "0.3.1"
 num = "0.3.1"
+#klefki_derive = { path = "./klefki_derive" }
