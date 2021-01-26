@@ -11,16 +11,18 @@ pub struct CurveParams<F> {
     pub B: prime::PrimeField<F>,
 }
 
-pub trait Curve<F, G> {
-    fn new(x: prime::PrimeField<F>, y: prime::PrimeField<F>) -> Box<dyn CurvePoint<F, G>>;
+pub trait FromBigUint<F, G> {
+    fn from(x: prime::PrimeField<F>, y: prime::PrimeField<F>) -> Box<dyn CurvePoint<F, G>>;
+}
 
+pub trait Op<F, G> {
     fn op(a: Box<dyn CurvePoint<F, G>>, b: Box<dyn CurvePoint<F, G>>) -> Box<dyn CurvePoint<F, G>>;
 }
 
 pub trait CurvePoint<F, G>
 where
-    G: Curve<F, G>,
-    F: prime::New,
+    G: FromBigUint<F, G> + Op<F, G>,
+    F: prime::FromBigUint,
 {
     fn x(&self) -> prime::PrimeField<F>;
     fn y(&self) -> prime::PrimeField<F>;
@@ -30,8 +32,8 @@ pub type EllipticCurveGroup<F, G> = Box<dyn CurvePoint<F, G>>;
 
 impl<F, G> Add for EllipticCurveGroup<F, G>
 where
-    G: Curve<F, G>,
-    F: prime::New,
+    G: FromBigUint<F, G> + Op<F, G>,
+    F: prime::FromBigUint,
 {
     type Output = Self;
     fn add(self, rhs: Self) -> Self {
@@ -41,11 +43,11 @@ where
 
 impl<F, G> Zero for EllipticCurveGroup<F, G>
 where
-    G: Curve<F, G>,
-    F: prime::New,
+    G: FromBigUint<F, G> + Op<F, G>,
+    F: prime::FromBigUint,
 {
     fn zero() -> Self {
-        return G::new(
+        return G::from(
             prime::PrimeField::<F>::zero(),
             prime::PrimeField::<F>::zero(),
         );
@@ -58,19 +60,19 @@ where
 
 impl<F, G> Neg for EllipticCurveGroup<F, G>
 where
-    G: Curve<F, G>,
-    F: prime::New,
+    G: FromBigUint<F, G> + Op<F, G>,
+    F: prime::FromBigUint,
 {
     type Output = Self;
     fn neg(self) -> Self {
-        return G::new(self.x(), -self.y());
+        return G::from(self.x(), -self.y());
     }
 }
 
 impl<F, G> Sub for EllipticCurveGroup<F, G>
 where
-    G: Curve<F, G>,
-    F: prime::New,
+    G: FromBigUint<F, G> + Op<F, G>,
+    F: prime::FromBigUint,
 {
     type Output = Self;
     fn sub(self, rhs: Self) -> Self {
@@ -80,8 +82,8 @@ where
 
 impl<F, G> PartialEq for EllipticCurveGroup<F, G>
 where
-    G: Curve<F, G>,
-    F: prime::New,
+    G: FromBigUint<F, G> + Op<F, G>,
+    F: prime::FromBigUint,
 {
     fn eq(&self, rhs: &Self) -> bool {
         return self.x() == rhs.x() && self.y() == rhs.y();
@@ -94,14 +96,14 @@ where
 
 impl<F, G> Eq for EllipticCurveGroup<F, G>
 where
-    G: Curve<F, G>,
-    F: prime::New,
+    G: FromBigUint<F, G> + Op<F, G>,
+    F: prime::FromBigUint,
 {
 }
 
 impl<F, G> Group for EllipticCurveGroup<F, G>
 where
-    G: Curve<F, G>,
-    F: prime::New,
+    G: FromBigUint<F, G> + Op<F, G>,
+    F: prime::FromBigUint,
 {
 }
