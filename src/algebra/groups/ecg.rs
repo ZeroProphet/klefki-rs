@@ -1,10 +1,13 @@
 use crate::algebra::fields::prime;
 use crate::algebra::traits::Group;
+use std::fmt;
+use num::traits::Num;
 use num::traits::Zero;
 use num_bigint::BigUint;
 use std::cmp::{Eq, PartialEq};
 use std::ops::Neg;
 use std::ops::{Add, Sub};
+use std::convert::TryFrom;
 
 pub trait FromBigUint<F, G> {
     fn from(x: prime::PrimeField<F>, y: prime::PrimeField<F>) -> Box<dyn CurvePoint<F, G>>;
@@ -14,7 +17,7 @@ pub trait Op<F, G> {
     fn op(a: Box<dyn CurvePoint<F, G>>, b: Box<dyn CurvePoint<F, G>>) -> Box<dyn CurvePoint<F, G>>;
 }
 
-pub trait CurvePoint<F, G>
+pub trait CurvePoint<F, G>: fmt::Debug
 where
     G: FromBigUint<F, G> + Op<F, G>,
     F: prime::FromBigUint,
@@ -143,5 +146,29 @@ where
 {
     fn from(v: (BigUint, BigUint)) -> Self {
         return G::from(F::from(v.0), F::from(v.1));
+    }
+}
+
+
+impl<F, G> TryFrom<(&str, &str)> for EllipticCurveGroup<F, G>
+where
+    G: FromBigUint<F, G> + Op<F, G>,
+    F: prime::FromBigUint,
+{
+    type Error = <BigUint as Num>::FromStrRadixErr;
+    fn try_from(v: (&str, &str)) -> Result<Self, Self::Error> {
+        let x = BigUint::from_str_radix(v.0, 10)?;
+        let y = BigUint::from_str_radix(v.1, 10)?;
+        return Ok(Self::from((x, y)));
+    }
+}
+
+impl<F, G> Clone for EllipticCurveGroup<F, G>
+where
+    G: FromBigUint<F, G> + Op<F, G>,
+    F: prime::FromBigUint,
+{
+    fn clone(&self) -> Self {
+        return G::from(self.x().clone(), self.y().clone());
     }
 }

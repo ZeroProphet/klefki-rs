@@ -1,7 +1,7 @@
 use crate::algebra::fields::prime;
 use num_bigint::BigUint;
 
-pub const BABY_JUBJUB_P: [u32; 8] = [
+const BABY_JUBJUB_P: [u32; 8] = [
     0xf0000001u32,
     0x43e1f593u32,
     0x79b97091u32,
