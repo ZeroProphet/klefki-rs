@@ -1,6 +1,7 @@
 use crate::algebra::fields::prime;
 use crate::algebra::traits::Group;
 use num::traits::Zero;
+use num_bigint::BigUint;
 use std::cmp::{Eq, PartialEq};
 use std::ops::Neg;
 use std::ops::{Add, Sub};
@@ -106,4 +107,47 @@ where
     G: FromBigUint<F, G> + Op<F, G>,
     F: prime::FromBigUint,
 {
+}
+
+impl<F, G> From<(u32, u32)> for EllipticCurveGroup<F, G>
+where
+    G: FromBigUint<F, G> + Op<F, G>,
+    F: prime::FromBigUint,
+{
+    fn from(v: (u32, u32)) -> Self {
+        return G::from(F::from(BigUint::from(v.0)), F::from(BigUint::from(v.1)));
+    }
+}
+
+impl<F, G> From<(u16, u16)> for EllipticCurveGroup<F, G>
+where
+    G: FromBigUint<F, G> + Op<F, G>,
+    F: prime::FromBigUint,
+{
+    fn from(v: (u16, u16)) -> Self {
+        return G::from(F::from(BigUint::from(v.0)), F::from(BigUint::from(v.1)));
+    }
+}
+
+impl<F, G> From<(&[u32], &[u32])> for EllipticCurveGroup<F, G>
+where
+    G: FromBigUint<F, G> + Op<F, G>,
+    F: prime::FromBigUint,
+{
+    fn from(v: (&[u32], &[u32])) -> Self {
+        return G::from(
+            F::from(BigUint::from_slice(v.0)),
+            F::from(BigUint::from_slice(v.1)),
+        );
+    }
+}
+
+impl<F, G> From<(BigUint, BigUint)> for EllipticCurveGroup<F, G>
+where
+    G: FromBigUint<F, G> + Op<F, G>,
+    F: prime::FromBigUint,
+{
+    fn from(v: (BigUint, BigUint)) -> Self {
+        return G::from(F::from(v.0), F::from(v.1));
+    }
 }

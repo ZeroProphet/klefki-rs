@@ -32,10 +32,4 @@ impl prime::FromBigUint for BabyJubJubFieldEle {
     }
 }
 
-impl From<u32> for BabyJubJubField {
-    fn from(v: u32) -> Self {
-        return prime::FromBigUint::from(BigUint::from(v));
-    }
-}
-
 pub type BabyJubJubField = Box<dyn prime::PrimeFieldEle<BabyJubJubFieldEle>>;

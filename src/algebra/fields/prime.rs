@@ -131,6 +131,42 @@ where
     }
 }
 
+impl<T> From<BigUint> for PrimeField<T>
+where
+    T: FromBigUint,
+{
+    fn from(v: BigUint) -> Self {
+        return T::from(v);
+    }
+}
+
+impl<T> From<u32> for PrimeField<T>
+where
+    T: FromBigUint,
+{
+    fn from(v: u32) -> Self {
+        return T::from(BigUint::from(v));
+    }
+}
+
+impl<T> From<u16> for PrimeField<T>
+where
+    T: FromBigUint,
+{
+    fn from(v: u16) -> Self {
+        return T::from(BigUint::from(v));
+    }
+}
+
+impl<T> From<&[u32]> for PrimeField<T>
+where
+    T: FromBigUint,
+{
+    fn from(v: &[u32]) -> Self {
+        return T::from(BigUint::from_slice(v));
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use crate::algebra::fields::prime::FromBigUint;
@@ -167,12 +203,6 @@ mod tests {
         }
     }
     type Secp256k1FinateField = Box<dyn PrimeFieldEle<Secp256k1FieldEle>>;
-
-    impl From<u16> for Secp256k1FinateField {
-        fn from(v: u16) -> Self {
-            return FromBigUint::from(BigUint::from(v));
-        }
-    }
 
     #[test]
     fn ff_add() {
