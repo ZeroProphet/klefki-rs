@@ -6,12 +6,6 @@ use std::cmp::{Eq, PartialEq};
 use std::ops::Neg;
 use std::ops::{Add, Sub};
 
-#[allow(non_snake_case)]
-pub struct CurveParams<F> {
-    pub A: prime::PrimeField<F>,
-    pub B: prime::PrimeField<F>,
-}
-
 pub trait FromBigUint<F, G> {
     fn from(x: prime::PrimeField<F>, y: prime::PrimeField<F>) -> Box<dyn CurvePoint<F, G>>;
 }
