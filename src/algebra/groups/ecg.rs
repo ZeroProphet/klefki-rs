@@ -1,7 +1,7 @@
 use crate::algebra::fields::prime;
+use crate::algebra::groups::arithmetic::double_and_add_algorithm;
 use crate::algebra::traits::Group;
 use crate::algebra::traits::Scalar;
-use crate::algebra::groups::arithmetic::double_and_add_algorithm;
 use num::traits::Num;
 use num::traits::Zero;
 use num_bigint::BigUint;
@@ -174,7 +174,7 @@ where
     }
 }
 
-impl <F, G> Scalar<BigUint> for EllipticCurveGroup<F, G>
+impl<F, G> Scalar<BigUint> for EllipticCurveGroup<F, G>
 where
     G: FromBigUint<F, G> + Op<F, G>,
     F: prime::FromBigUint,
@@ -185,8 +185,7 @@ where
     }
 }
 
-
-impl <F, G> Scalar<usize> for EllipticCurveGroup<F, G>
+impl<F, G> Scalar<usize> for EllipticCurveGroup<F, G>
 where
     G: FromBigUint<F, G> + Op<F, G>,
     F: prime::FromBigUint,

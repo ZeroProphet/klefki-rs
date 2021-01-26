@@ -1,5 +1,4 @@
 use num::traits::{One, Zero};
-use num_bigint::BigUint;
 use std::cmp::Eq;
 /// # ref:
 /// * http://www-users.math.umn.edu/~brubaker/docs/152/152groups.pdf

@@ -24,10 +24,10 @@ impl ecg::FromBigUint<ff::BabyJubJubFieldEle, BabyJubJubCurve> for BabyJubJubCur
 impl ecg::Op<ff::BabyJubJubFieldEle, BabyJubJubCurve> for BabyJubJubCurve {
     fn op(a: BabyJubJubCurveGroup, b: BabyJubJubCurveGroup) -> BabyJubJubCurveGroup {
         if a == BabyJubJubCurveGroup::zero() {
-            return b
+            return b;
         }
         if b == BabyJubJubCurveGroup::zero() {
-            return a
+            return a;
         }
         let m = ff::BabyJubJubField::from(BABY_JUBJUB_B) * a.x() * b.x() * a.y() * b.y();
         let x3 = (a.x() * b.y() + a.y() * b.x()) / (ff::BabyJubJubField::one() + m.clone());
@@ -48,10 +48,10 @@ impl ecg::CurvePoint<ff::BabyJubJubFieldEle, BabyJubJubCurve> for BabyJubJubCurv
 
 #[cfg(test)]
 mod tests {
-    use crate::curves::baby_jubjub::curve;
     use crate::algebra::traits::Scalar;
-    use std::convert::TryFrom;
+    use crate::curves::baby_jubjub::curve;
     use num_bigint::BigUint;
+    use std::convert::TryFrom;
 
     #[test]
     fn test_addition() {
@@ -117,7 +117,9 @@ mod tests {
         let p = curve::BabyJubJubCurveGroup::from((x, y));
         let b = curve::BabyJubJubCurveGroup::try_from((bx, by)).unwrap();
 
-        assert_eq!(b.scalar(BigUint::parse_bytes(l.as_bytes(), 10).unwrap()) == p, true);
+        assert_eq!(
+            b.scalar(BigUint::parse_bytes(l.as_bytes(), 10).unwrap()) == p,
+            true
+        );
     }
-
 }

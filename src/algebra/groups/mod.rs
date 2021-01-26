@@ -1,2 +1,2 @@
-pub mod ecg;
 pub mod arithmetic;
+pub mod ecg;
