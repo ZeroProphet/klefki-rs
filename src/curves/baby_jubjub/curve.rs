@@ -118,7 +118,13 @@ mod tests {
         let b = curve::BabyJubJubCurveGroup::try_from((bx, by)).unwrap();
 
         assert_eq!(
-            b.scalar(BigUint::parse_bytes(l.as_bytes(), 10).unwrap()) == p,
+            b.clone()
+                .scalar(BigUint::parse_bytes(l.as_bytes(), 10).unwrap())
+                == p.clone(),
+            true
+        );
+        assert_eq!(
+            b * BigUint::parse_bytes(l.as_bytes(), 10).unwrap() == p,
             true
         );
     }

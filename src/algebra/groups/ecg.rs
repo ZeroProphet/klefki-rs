@@ -9,7 +9,7 @@ use std::cmp::{Eq, PartialEq};
 use std::convert::TryFrom;
 use std::fmt;
 use std::ops::Neg;
-use std::ops::{Add, Sub};
+use std::ops::{Add, Mul, Sub};
 
 pub trait FromBigUint<F, G> {
     fn from(x: prime::PrimeField<F>, y: prime::PrimeField<F>) -> Box<dyn CurvePoint<F, G>>;
@@ -193,5 +193,27 @@ where
     type Output = Self;
     fn scalar(self, u: usize) -> Self {
         return double_and_add_algorithm(BigUint::from(u), self.clone(), Self::zero());
+    }
+}
+
+impl<F, G> Mul<BigUint> for EllipticCurveGroup<F, G>
+where
+    G: FromBigUint<F, G> + Op<F, G>,
+    F: prime::FromBigUint,
+{
+    type Output = Self;
+    fn mul(self, u: BigUint) -> Self {
+        return Self::scalar(self, u);
+    }
+}
+
+impl<F, G> Mul<usize> for EllipticCurveGroup<F, G>
+where
+    G: FromBigUint<F, G> + Op<F, G>,
+    F: prime::FromBigUint,
+{
+    type Output = Self;
+    fn mul(self, u: usize) -> Self {
+        return Self::scalar(self, u);
     }
 }
