@@ -19,13 +19,10 @@ where
 
     let mut result = init;
     let mut added = x;
-    // [0, 1]
     for bit in bits(times) {
         if bit == BigUint::one() {
-            // ret = add + 0
             result = added.clone() + result;
         }
-        // x = x + x
         added = added.clone() + added;
     }
     return result;
