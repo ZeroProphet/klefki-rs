@@ -12,7 +12,7 @@ use std::ops::Neg;
 use std::ops::{Add, Mul, Sub};
 
 pub trait FromBigUint<F, G> {
-    fn from(x: prime::PrimeField<F>, y: prime::PrimeField<F>) -> Box<dyn CurvePoint<F, G>>;
+    fn from(x: prime::BoxedPrimeField<F>, y: prime::BoxedPrimeField<F>) -> Box<dyn CurvePoint<F, G>>;
 }
 
 pub trait Op<F, G> {
@@ -24,8 +24,8 @@ where
     G: FromBigUint<F, G> + Op<F, G>,
     F: prime::FromBigUint,
 {
-    fn x(&self) -> prime::PrimeField<F>;
-    fn y(&self) -> prime::PrimeField<F>;
+    fn x(&self) -> prime::BoxedPrimeField<F>;
+    fn y(&self) -> prime::BoxedPrimeField<F>;
 }
 
 pub type EllipticCurveGroup<F, G> = Box<dyn CurvePoint<F, G>>;
@@ -48,13 +48,13 @@ where
 {
     fn zero() -> Self {
         return G::from(
-            prime::PrimeField::<F>::zero(),
-            prime::PrimeField::<F>::zero(),
+            prime::BoxedPrimeField::<F>::zero(),
+            prime::BoxedPrimeField::<F>::zero(),
         );
     }
     fn is_zero(&self) -> bool {
-        return self.x() == prime::PrimeField::<F>::zero()
-            && self.y() == prime::PrimeField::<F>::zero();
+        return self.x() == prime::BoxedPrimeField::<F>::zero()
+            && self.y() == prime::BoxedPrimeField::<F>::zero();
     }
 }
 

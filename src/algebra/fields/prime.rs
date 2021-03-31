@@ -11,17 +11,17 @@ use std::ops::Neg;
 use std::ops::{Add, Div, Mul, Sub};
 
 pub trait FromBigUint {
-    fn from(value: BigUint) -> PrimeField<Self>;
+    fn from(value: BigUint) -> BoxedPrimeField<Self>;
 }
 
-pub trait PrimeFieldEle<T>: Debug {
+pub trait PrimeField<T>: Debug {
     fn prime(&self) -> BigUint;
     fn value(&self) -> BigUint;
 }
 
-pub type PrimeField<T> = Box<dyn PrimeFieldEle<T>>;
+pub type BoxedPrimeField<T> = Box<dyn PrimeField<T>>;
 
-impl<T> Add for PrimeField<T>
+impl<T> Add for BoxedPrimeField<T>
 where
     T: FromBigUint,
 {
@@ -31,7 +31,7 @@ where
     }
 }
 
-impl<T> Zero for PrimeField<T>
+impl<T> Zero for BoxedPrimeField<T>
 where
     T: FromBigUint,
 {
@@ -43,7 +43,7 @@ where
     }
 }
 
-impl<T> One for PrimeField<T>
+impl<T> One for BoxedPrimeField<T>
 where
     T: FromBigUint,
 {
@@ -55,7 +55,7 @@ where
     }
 }
 
-impl<T> Mul for PrimeField<T>
+impl<T> Mul for BoxedPrimeField<T>
 where
     T: FromBigUint,
 {
@@ -65,7 +65,7 @@ where
     }
 }
 
-impl<T> Neg for PrimeField<T>
+impl<T> Neg for BoxedPrimeField<T>
 where
     T: FromBigUint,
 {
@@ -75,7 +75,7 @@ where
     }
 }
 
-impl<T> Sub for PrimeField<T>
+impl<T> Sub for BoxedPrimeField<T>
 where
     T: FromBigUint,
 {
@@ -85,7 +85,7 @@ where
     }
 }
 
-impl<T> Div for PrimeField<T>
+impl<T> Div for BoxedPrimeField<T>
 where
     T: FromBigUint,
 {
@@ -95,7 +95,7 @@ where
     }
 }
 
-impl<T> MulInv for PrimeField<T>
+impl<T> MulInv for BoxedPrimeField<T>
 where
     T: FromBigUint,
 {
@@ -108,7 +108,7 @@ where
     }
 }
 
-impl<T> PartialEq for PrimeField<T>
+impl<T> PartialEq for BoxedPrimeField<T>
 where
     T: FromBigUint,
 {
@@ -121,12 +121,12 @@ where
     }
 }
 
-impl<T> Eq for PrimeField<T> where T: FromBigUint {}
-impl<T> Group for PrimeField<T> where T: FromBigUint {}
-impl<T> Ring for PrimeField<T> where T: FromBigUint {}
-impl<T> Field for PrimeField<T> where T: FromBigUint {}
+impl<T> Eq for BoxedPrimeField<T> where T: FromBigUint {}
+impl<T> Group for BoxedPrimeField<T> where T: FromBigUint {}
+impl<T> Ring for BoxedPrimeField<T> where T: FromBigUint {}
+impl<T> Field for BoxedPrimeField<T> where T: FromBigUint {}
 
-impl<T> Clone for PrimeField<T>
+impl<T> Clone for BoxedPrimeField<T>
 where
     T: FromBigUint,
 {
@@ -135,7 +135,7 @@ where
     }
 }
 
-impl<T> From<BigUint> for PrimeField<T>
+impl<T> From<BigUint> for BoxedPrimeField<T>
 where
     T: FromBigUint,
 {
@@ -144,7 +144,7 @@ where
     }
 }
 
-impl<T> From<u32> for PrimeField<T>
+impl<T> From<u32> for BoxedPrimeField<T>
 where
     T: FromBigUint,
 {
@@ -153,7 +153,7 @@ where
     }
 }
 
-impl<T> From<u16> for PrimeField<T>
+impl<T> From<u16> for BoxedPrimeField<T>
 where
     T: FromBigUint,
 {
@@ -162,7 +162,7 @@ where
     }
 }
 
-impl<T> From<&[u32]> for PrimeField<T>
+impl<T> From<&[u32]> for BoxedPrimeField<T>
 where
     T: FromBigUint,
 {
@@ -171,7 +171,7 @@ where
     }
 }
 
-impl<T> TryFrom<&str> for PrimeField<T>
+impl<T> TryFrom<&str> for BoxedPrimeField<T>
 where
     T: FromBigUint,
 {
@@ -185,7 +185,7 @@ where
 mod tests {
     use crate::algebra::fields::prime::FromBigUint;
     use crate::algebra::fields::prime::PrimeField;
-    use crate::algebra::fields::prime::PrimeFieldEle;
+    use crate::algebra::fields::prime::BoxedPrimeField;
     use num_bigint::BigUint;
     use std::convert::TryFrom;
 
@@ -195,12 +195,12 @@ mod tests {
     }
 
     impl FromBigUint for Secp256k1FieldEle {
-        fn from(value: BigUint) -> PrimeField<Secp256k1FieldEle> {
-            return (box Self { value: value }) as PrimeField<Secp256k1FieldEle>;
+        fn from(value: BigUint) -> BoxedPrimeField<Secp256k1FieldEle> {
+            return (box Self { value: value }) as BoxedPrimeField<Secp256k1FieldEle>;
         }
     }
 
-    impl PrimeFieldEle<Secp256k1FieldEle> for Secp256k1FieldEle {
+    impl PrimeField<Secp256k1FieldEle> for Secp256k1FieldEle {
         fn prime(&self) -> BigUint {
             return BigUint::from_slice(&[
                 0xfffffc2fu32,
@@ -217,7 +217,7 @@ mod tests {
             return self.value.clone();
         }
     }
-    type Secp256k1FinateField = Box<dyn PrimeFieldEle<Secp256k1FieldEle>>;
+    type Secp256k1FinateField = Box<dyn PrimeField<Secp256k1FieldEle>>;
 
     #[test]
     fn ff_add_and_sub() {
