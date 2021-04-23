@@ -10,13 +10,15 @@ impl Add for U256 {
         let mut carry: u128 = 0;
         let mut sum: u128;
         let mut out = [0u64;6];
+
         for i in 0 .. 6 {
-            sum = u128::from(self.0[i]) + u128::from(rhs.0[i]) + u128::from(carry);
+            sum = u128::from(self.0[i]) + u128::from(rhs.0[i]) + carry;
             if sum > u64::MAX.into() {
-                carry = sum / u128::from(u64::MAX);
-                sum = sum - u128::from(u64::MAX) * carry - 1;
+                // carry can ether be 0 or 1
+                carry = 1u128;
+                sum = sum - u128::from(u64::MAX) - 1;
             } else {
-                carry = 0;
+                carry = 0u128;
             }
             out[i] = u64::try_from(sum).unwrap();
         }
@@ -30,15 +32,16 @@ impl Sub for U256 {
         let mut borrow = 0;
         let mut out = [0u64;6];
         let mut delta: i128;
+
         for i in 0 .. 6 {
             delta = i128::from(self.0[i]) - i128::from(rhs.0[i]) - borrow;
             if delta < 0i128 {
                 // borrow can ether be 0 or 1
-                borrow = 1;
+                borrow = 1i128;
                 // delta should always less than i64::MAX
                 delta = delta + i128::from(u64::MAX) + 1;
             } else {
-                borrow = 0;
+                borrow = 0i128;
             }
             out[i] = u64::try_from(delta).unwrap();
         }
