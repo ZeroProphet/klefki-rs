@@ -2,6 +2,7 @@ use std::ops::{Add, Div, Mul, Sub};
 use std::convert::TryFrom;
 
 /// U256 on littleEdian
+/// ref: https://arxiv.org/ftp/arxiv/papers/1204/1204.0232.pdf
 pub struct U256([u64;6]);
 
 impl Add for U256 {
@@ -13,14 +14,8 @@ impl Add for U256 {
 
         for i in 0 .. 6 {
             sum = u128::from(self.0[i]) + u128::from(rhs.0[i]) + carry;
-            if sum > u64::MAX.into() {
-                // carry can ether be 0 or 1
-                carry = 1u128;
-                sum = sum - u128::from(u64::MAX) - 1;
-            } else {
-                carry = 0u128;
-            }
-            out[i] = u64::try_from(sum).unwrap();
+            carry = sum >> 64;
+            out[i] = u64::try_from(sum & u128::from(u64::MAX)).unwrap();
         }
         return Self(out);
     }
@@ -35,15 +30,8 @@ impl Sub for U256 {
 
         for i in 0 .. 6 {
             delta = i128::from(self.0[i]) - i128::from(rhs.0[i]) - borrow;
-            if delta < 0i128 {
-                // borrow can ether be 0 or 1
-                borrow = 1i128;
-                // delta should always less than i64::MAX
-                delta = delta + i128::from(u64::MAX) + 1;
-            } else {
-                borrow = 0i128;
-            }
-            out[i] = u64::try_from(delta).unwrap();
+            borrow = (delta < 0) as i128;
+            out[i] = u64::try_from(delta & i128::from(u64::MAX)).unwrap();
         }
         return Self(out)
     }
