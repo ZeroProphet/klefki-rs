@@ -49,8 +49,11 @@ impl Sub for U256 {
 
 #[cfg(test)]
 mod tests {
+    extern crate test;
+
     use super::U256;
     use rand::Rng;
+    use test::Bencher;
 
     #[test]
     fn test_add_sub() {
@@ -78,5 +81,22 @@ mod tests {
         assert_eq!(a + b, b + a);
         assert_eq!(a + b - a, b);
         assert_eq!(a + b - b, a);
+    }
+
+
+    #[bench]
+    fn bench_add(b: &mut Bencher) {
+        let mut rng = rand::thread_rng();
+        let a = U256(
+            [
+                rng.gen(),
+                rng.gen(),
+                rng.gen(),
+                rng.gen(),
+                rng.gen(),
+                rng.gen()
+            ]
+        );
+        b.iter(|| a + a);
     }
 }
