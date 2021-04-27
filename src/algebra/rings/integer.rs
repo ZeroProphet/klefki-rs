@@ -16,13 +16,15 @@ impl PartialEq for u256 {
 impl Add for u256 {
     type Output = Self;
     fn add(self, rhs: Self) -> Self {
-        let mut sum: u64;
         let mut out = [0u64;6];
-        let mut overflow = false;
+        let mut borrowed = 0;
 
         for i in 0 .. 6 {
-            (sum, overflow) = (self.0[i] + (overflow as u64)).overflowing_add(rhs.0[i]);
-            out[i] = sum;
+            (|(sum, overflow)| {
+                out[i] = sum + borrowed as u64;
+                borrowed = overflow as u64;
+
+            })(self.0[i].overflowing_add(rhs.0[i]))
         }
         return Self(out);
     }
