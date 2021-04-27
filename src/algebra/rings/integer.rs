@@ -21,7 +21,7 @@ impl Add for u256 {
 
         for i in 0 .. 6 {
             (|(sum, overflow)| {
-                out[i] = sum + borrowed as u64;
+                out[i] = sum + borrowed;
                 borrowed = overflow as u64;
 
             })(self.0[i].overflowing_add(rhs.0[i]))
@@ -33,14 +33,15 @@ impl Add for u256 {
 impl Sub for u256 {
     type Output = Self;
     fn sub(self, rhs: Self) -> Self {
-        let mut borrow = 0;
         let mut out = [0u64;6];
-        let mut delta: i128;
+        let mut borrowed = 0;
 
         for i in 0 .. 6 {
-            delta = i128::from(self.0[i]) - i128::from(rhs.0[i]) - borrow;
-            borrow = (delta < 0) as i128;
-            out[i] = u64::try_from(delta & i128::from(u64::MAX)).unwrap();
+            (|(delta, overflow)| {
+                out[i] = delta - borrowed;
+                borrowed = overflow as u64;
+
+            })(self.0[i].overflowing_sub(rhs.0[i]))
         }
         return Self(out)
     }
