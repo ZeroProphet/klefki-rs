@@ -25,9 +25,7 @@ impl IndexMut<usize> for u256 {
 
 impl From<u64> for u256 {
     fn from(a: u64) -> Self {
-        let mut ret = Self::zero();
-        ret[0] = a;
-        return ret;
+        return Self([a, 0, 0, 0, 0, 0]);
     }
 }
 
