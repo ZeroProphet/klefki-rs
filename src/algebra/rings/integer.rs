@@ -1,12 +1,35 @@
-use std::ops::{Add, Div, Mul, Sub};
-use num::traits::{One, Zero};
-use std::convert::TryFrom;
-use std::cmp::Eq;
+use std::ops::{Add, Sub};
+use num::traits::Zero;
+use std::ops::{Index, IndexMut};
 
 
 #[derive(Debug, Clone, Copy)]
 #[allow(non_camel_case_types)]
 pub struct u256([u64;6]);
+
+impl Index<usize> for u256 {
+    type Output = u64;
+
+    fn index(&self, i: usize) -> &Self::Output{
+        return &self.0[i]
+    }
+}
+
+impl IndexMut<usize> for u256 {
+    fn index_mut(&mut self, i: usize) -> &mut Self::Output{
+        return &mut self.0[i]
+    }
+}
+
+
+
+impl From<u64> for u256 {
+    fn from(a: u64) -> Self {
+        let mut ret = Self::zero();
+        ret[0] = a;
+        return ret;
+    }
+}
 
 impl Zero for u256 {
     fn zero() -> Self {
@@ -18,16 +41,6 @@ impl Zero for u256 {
     }
 }
 
-// impl One for u256 {
-//     fn one() -> Self {
-//         Self([[1u64], [0u64;6]].concat());
-//     }
-//     fn is_one(&self) {
-//         return self.0 == [[1u64], [0u64;6]].concat();
-//     }
-// }
-
-
 impl PartialEq for u256 {
     fn eq(&self, rhs: &Self) -> bool {
         return self.0 == rhs.0;
@@ -37,7 +50,7 @@ impl PartialEq for u256 {
 impl Add for u256 {
     type Output = Self;
     fn add(self, rhs: Self) -> Self {
-        let mut out = [0u64;6];
+        let mut out = Self::zero();
         let mut borrowed = 0;
         for i in 0 .. 6 {
             (|(sum, overflow)| {
@@ -46,14 +59,14 @@ impl Add for u256 {
 
             })(self.0[i].overflowing_add(rhs.0[i]))
         }
-        return Self(out);
+        return out;
     }
 }
 
 impl Sub for u256 {
     type Output = Self;
     fn sub(self, rhs: Self) -> Self {
-        let mut out = [0u64;6];
+        let mut out = Self::zero();
         let mut borrowed = 0;
         for i in 0 .. 6 {
             (|(delta, overflow)| {
@@ -62,10 +75,9 @@ impl Sub for u256 {
 
             })(self.0[i].overflowing_sub(rhs.0[i]))
         }
-        return Self(out)
+        return out
     }
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -76,7 +88,7 @@ mod tests {
     use test::Bencher;
 
     #[test]
-    fn test_add_sub() {
+    fn test_arith() {
         let mut rng = rand::thread_rng();
         let a = u256(
             [
