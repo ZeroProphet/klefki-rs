@@ -1,11 +1,44 @@
 use num::traits::Zero;
 use std::ops::{Add, AddAssign, Sub, SubAssign, Mul, Div};
 use std::ops::{Index, IndexMut};
+use std::cmp::Ord;
+use std::cmp::Ordering;
 use std::convert::TryFrom;
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, Eq)]
 #[allow(non_camel_case_types)]
 pub struct u256([u64; 6]);
+
+impl PartialOrd for u256 {
+    fn partial_cmp(&self, rhs: &Self) -> Option<Ordering> {
+        for i in 6..0 {
+            match self[i].cmp(&rhs[i]) {
+                Ordering::Equal => continue,
+                o => {
+                    return Some(o);
+                }
+            }
+        }
+        return Some(Ordering::Equal);
+    }
+}
+
+
+impl Ord for u256 {
+    fn cmp(&self, rhs: &Self) -> Ordering {
+        for i in 6..0 {
+            match self[i].cmp(&rhs[i]) {
+                Ordering::Equal => continue,
+                o => {
+                    return o;
+                }
+            }
+        }
+        return Ordering::Equal;
+    }
+}
+
+
 
 impl Index<usize> for u256 {
     type Output = u64;
@@ -120,7 +153,9 @@ impl Mul<u64> for u256 {
 impl Div<u64> for u256 {
     type Output = Self;
 
-    fn div(self, _rhs: u64) -> Self::Output {
+    fn div(self, rhs: u64) -> Self::Output {
+        let mut rem = [0u64;6];
+        let mut quoti = [0u64;6];
         unimplemented!();
     }
 }
