@@ -1,6 +1,7 @@
 use num::traits::Zero;
-use std::ops::{Add, AddAssign, Sub, SubAssign};
+use std::ops::{Add, AddAssign, Sub, SubAssign, Mul};
 use std::ops::{Index, IndexMut};
+use std::convert::TryFrom;
 
 #[derive(Debug, Clone, Copy)]
 #[allow(non_camel_case_types)]
@@ -77,6 +78,7 @@ impl Sub for u256 {
         let mut out = Self::zero();
         let mut borrowed = 0;
         let mut overflow: bool;
+
         for i in 0..6 {
             (out[i], overflow) = self[i].overflowing_sub(rhs[i]);
             out[i] -= borrowed;
@@ -89,12 +91,29 @@ impl Sub for u256 {
 impl SubAssign for u256 {
     fn sub_assign(&mut self, rhs: Self) {
         let mut borrowed = 0;
+
         let mut overflow: bool;
         for i in 0..6 {
             (self[i], overflow) = self[i].overflowing_sub(rhs[i]);
             self[i] -= borrowed;
             borrowed = overflow as u64;
         }
+    }
+}
+
+impl Mul<u64> for u256 {
+    type Output = Self;
+
+    fn mul(self, rhs: u64) -> Self::Output {
+        let mut prod: u128;
+        let mut carry = 0u128;
+        let mut out = [0u64;6];
+        for i in 0..6 {
+            prod = u128::from(self[i]) * u128::from(rhs) + carry;
+            carry = prod >> 64;
+            out[i] = u64::try_from(prod & u128::from(u64::MAX)).unwrap();
+        }
+        return Self(out);
     }
 }
 
@@ -133,7 +152,10 @@ mod tests {
         c -= a;
         assert_eq!(c, b);
         c += a;
-        assert_eq!(c, a + b)
+        assert_eq!(c, a + b);
+        assert_eq!(c * 5u64, c + c + c + c + c);
+
+
     }
 
     #[bench]
