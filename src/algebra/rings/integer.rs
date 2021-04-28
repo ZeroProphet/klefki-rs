@@ -96,7 +96,7 @@ impl SubAssign for u256 {
         let mut overflow: bool;
         for i in 0 .. 6 {
             (self[i], overflow) = self[i].overflowing_sub(rhs[i]);
-            self[i] += borrowed;
+            self[i] -= borrowed;
             borrowed = overflow as u64;
         }
     }
@@ -136,6 +136,12 @@ mod tests {
         assert_eq!(a + b, b + a);
         assert_eq!(a + b - a, b);
         assert_eq!(a + b - b, a);
+
+        let mut c = a + b;
+        c -= a;
+        assert_eq!(c, b);
+        c += a;
+        assert_eq!(c, a + b)
     }
 
 
