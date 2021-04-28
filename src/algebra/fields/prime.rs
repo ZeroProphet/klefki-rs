@@ -183,9 +183,9 @@ where
 
 #[cfg(test)]
 mod tests {
+    use crate::algebra::fields::prime::BoxedPrimeField;
     use crate::algebra::fields::prime::FromBigUint;
     use crate::algebra::fields::prime::PrimeField;
-    use crate::algebra::fields::prime::BoxedPrimeField;
     use num_bigint::BigUint;
     use std::convert::TryFrom;
 

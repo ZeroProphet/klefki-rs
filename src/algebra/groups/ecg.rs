@@ -12,7 +12,10 @@ use std::ops::Neg;
 use std::ops::{Add, Mul, Sub};
 
 pub trait FromBigUint<F, G> {
-    fn from(x: prime::BoxedPrimeField<F>, y: prime::BoxedPrimeField<F>) -> Box<dyn CurvePoint<F, G>>;
+    fn from(
+        x: prime::BoxedPrimeField<F>,
+        y: prime::BoxedPrimeField<F>,
+    ) -> Box<dyn CurvePoint<F, G>>;
 }
 
 pub trait Op<F, G> {
