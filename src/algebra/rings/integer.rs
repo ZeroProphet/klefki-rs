@@ -1,4 +1,4 @@
-use std::ops::{Add, Sub};
+use std::ops::{Add, Sub, AddAssign, SubAssign};
 use num::traits::Zero;
 use std::ops::{Index, IndexMut};
 
@@ -49,15 +49,28 @@ impl Add for u256 {
     type Output = Self;
     fn add(self, rhs: Self) -> Self {
         let mut out = Self::zero();
-        let mut borrowed = 0;
+        let mut carry = 0;
         for i in 0 .. 6 {
             (|(sum, overflow)| {
-                out[i] = sum + borrowed;
-                borrowed = overflow as u64;
+                out[i] = sum + carry;
+                carry = overflow as u64;
 
-            })(self.0[i].overflowing_add(rhs.0[i]))
+            })(self[i].overflowing_add(rhs[i]))
         }
         return out;
+    }
+}
+
+impl AddAssign for u256 {
+    fn add_assign(&mut self, rhs: Self) {
+        let mut carry = 0;
+        let mut overflow: bool;
+
+        for i in 0 .. 6 {
+            (self[i], overflow) = self[i].overflowing_add(rhs[i]);
+            self[i] += carry;
+            carry = overflow as u64;
+        }
     }
 }
 
@@ -71,9 +84,21 @@ impl Sub for u256 {
                 out[i] = delta - borrowed;
                 borrowed = overflow as u64;
 
-            })(self.0[i].overflowing_sub(rhs.0[i]))
+            })(self[i].overflowing_sub(rhs[i]))
         }
         return out
+    }
+}
+
+impl SubAssign for u256 {
+    fn sub_assign(&mut self, rhs: Self) {
+        let mut borrowed = 0;
+        let mut overflow: bool;
+        for i in 0 .. 6 {
+            (self[i], overflow) = self[i].overflowing_sub(rhs[i]);
+            self[i] += borrowed;
+            borrowed = overflow as u64;
+        }
     }
 }
 
