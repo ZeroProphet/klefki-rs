@@ -47,11 +47,12 @@ impl Add for u256 {
     fn add(self, rhs: Self) -> Self {
         let mut out = Self::zero();
         let mut carry = 0;
+        let mut overflow: bool;
+
         for i in 0..6 {
-            (|(sum, overflow)| {
-                out[i] = sum + carry;
-                carry = overflow as u64;
-            })(self[i].overflowing_add(rhs[i]))
+            (out[i], overflow) = self[i].overflowing_add(rhs[i]);
+            out[i] += carry;
+            carry = overflow as u64;
         }
         return out;
     }
@@ -75,11 +76,11 @@ impl Sub for u256 {
     fn sub(self, rhs: Self) -> Self {
         let mut out = Self::zero();
         let mut borrowed = 0;
+        let mut overflow: bool;
         for i in 0..6 {
-            (|(delta, overflow)| {
-                out[i] = delta - borrowed;
-                borrowed = overflow as u64;
-            })(self[i].overflowing_sub(rhs[i]))
+            (out[i], overflow) = self[i].overflowing_sub(rhs[i]);
+            out[i] -= borrowed;
+            borrowed = overflow as u64;
         }
         return out;
     }
