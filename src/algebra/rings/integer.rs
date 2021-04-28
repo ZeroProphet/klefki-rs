@@ -150,13 +150,19 @@ impl Mul<u64> for u256 {
     }
 }
 
-impl Div<u64> for u256 {
+
+/// https://en.wikipedia.org/wiki/Division_algorithm
+impl Div for u256 {
     type Output = Self;
 
-    fn div(self, rhs: u64) -> Self::Output {
-        let mut rem = [0u64;6];
-        let mut quoti = [0u64;6];
-        unimplemented!();
+    fn div(self, rhs: Self) -> Self::Output {
+        let mut rem = self.clone();
+        let mut quoti = Self::zero();
+        while quoti >= rem {
+            quoti += u256::from(1u64);
+            rem -= rhs;
+        }
+        return quoti;
     }
 }
 
