@@ -151,7 +151,6 @@ impl Mul<u64> for u256 {
 }
 
 
-/// https://en.wikipedia.org/wiki/Division_algorithm
 impl Div for u256 {
     type Output = Self;
 
@@ -203,8 +202,6 @@ mod tests {
         c += a;
         assert_eq!(c, a + b);
         assert_eq!(c * 5u64, c + c + c + c + c);
-
-
     }
 
     #[bench]
