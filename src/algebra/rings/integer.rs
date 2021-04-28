@@ -1,5 +1,5 @@
 use num::traits::Zero;
-use std::ops::{Add, AddAssign, Sub, SubAssign, Mul};
+use std::ops::{Add, AddAssign, Sub, SubAssign, Mul, Div};
 use std::ops::{Index, IndexMut};
 use std::convert::TryFrom;
 
@@ -114,6 +114,14 @@ impl Mul<u64> for u256 {
             out[i] = u64::try_from(prod & u128::from(u64::MAX)).unwrap();
         }
         return Self(out);
+    }
+}
+
+impl Div<u64> for u256 {
+    type Output = Self;
+
+    fn div(self, _rhs: u64) -> Self::Output {
+        unimplemented!();
     }
 }
 
