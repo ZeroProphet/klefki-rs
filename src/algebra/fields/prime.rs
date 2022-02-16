@@ -22,7 +22,8 @@ pub trait PrimeField<T> = One + Zero
     + Eq + PartialEq + Neg
     + Add + Div + Mul + Sub + MulInv
     + Field + Group + Ring + Num
-    + From<u16> + Property<T> ;
+    + From<u16> + Property<T> + From<BigUint>
+    + Clone;
 
 pub trait Property<T>: Debug {
     fn prime(&self) -> BigUint;
