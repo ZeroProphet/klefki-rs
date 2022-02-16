@@ -30,19 +30,6 @@ pub trait Property<T>: Debug {
     fn value(&self) -> BigUint;
 }
 
-impl<T> Property<T> for BoxedPrimeField<T>
-where
-    T: FromBigUint,
-{
-    fn prime(&self) -> BigUint {
-        (*self).prime()
-    }
-    fn value(&self) -> BigUint {
-        (*self).value()
-    }
-
-}
-
 impl<T> Add for BoxedPrimeField<T>
 where
     T: FromBigUint,
