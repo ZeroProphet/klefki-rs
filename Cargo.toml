@@ -2,7 +2,7 @@
 name = "klefki"
 version = "0.1.0"
 authors = ["Ryan.K <ryankung@ieee.org>"]
-edition = "2018"
+edition = "2021"
 
 [dependencies]
 num-bigint = "0.3.1"

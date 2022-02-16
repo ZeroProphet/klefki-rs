@@ -17,7 +17,7 @@ pub struct BabyJubJubFieldEle {
     pub value: BigUint,
 }
 
-impl prime::PrimeField<BabyJubJubFieldEle> for BabyJubJubFieldEle {
+impl prime::Property<BabyJubJubFieldEle> for BabyJubJubFieldEle {
     fn prime(&self) -> BigUint {
         return BigUint::from_slice(&BABY_JUBJUB_P);
     }
@@ -32,4 +32,4 @@ impl prime::FromBigUint for BabyJubJubFieldEle {
     }
 }
 
-pub type BabyJubJubField = Box<dyn prime::PrimeField<BabyJubJubFieldEle>>;
+pub type BabyJubJubField = Box<dyn prime::Property<BabyJubJubFieldEle>>;
